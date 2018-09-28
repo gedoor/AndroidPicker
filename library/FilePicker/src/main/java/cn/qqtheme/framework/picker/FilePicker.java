@@ -74,10 +74,8 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
         LinearLayout rootLayout = new LinearLayout(activity);
         rootLayout.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         rootLayout.setOrientation(LinearLayout.VERTICAL);
-        rootLayout.setBackgroundColor(Color.WHITE);
 
         ListView listView = new ListView(activity);
-        listView.setBackgroundColor(Color.WHITE);
         listView.setDivider(new ColorDrawable(0xFFDDDDDD));
         listView.setDividerHeight(1);
         listView.setCacheColorHint(Color.TRANSPARENT);
@@ -104,7 +102,6 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
         LinearLayout rootLayout = new LinearLayout(activity);
         rootLayout.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
         rootLayout.setOrientation(LinearLayout.VERTICAL);
-        rootLayout.setBackgroundColor(Color.WHITE);
 
         View lineView = new View(activity);
         lineView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, 1));
@@ -115,7 +112,6 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
         int height = ConvertUtils.toPx(activity, 30);
         pathView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, height));
         pathView.setAdapter(pathAdapter);
-        pathView.setBackgroundColor(Color.WHITE);
         pathView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
