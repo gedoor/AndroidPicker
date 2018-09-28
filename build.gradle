@@ -7,9 +7,10 @@ buildscript {
             url 'https://dl.google.com/dl/android/maven2/'
             name 'Google'
         }
+        google()
     }
     dependencies {
-        classpath 'com.android.tools.build:gradle:2.3.3'
+        classpath 'com.android.tools.build:gradle:3.2.0'
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.7.3'
     }
 }
