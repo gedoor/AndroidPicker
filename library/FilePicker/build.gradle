@@ -7,10 +7,6 @@ ext {
     pomDescription = "file picker for android"
 }
 
-dependencies {
-     implementation(":library:Common")
-}
-
 android {
     buildToolsVersion = '28.0.2'
 }

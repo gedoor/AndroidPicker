@@ -6,10 +6,6 @@ ext {
     pomDescription = "multiple picker for android"
 }
 
-dependencies {
-    implementation project(":library:Common")
-}
-
 android {
     buildToolsVersion = '28.0.2'
 }
