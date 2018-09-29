@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.support.annotation.CallSuper;
 import android.support.annotation.StyleRes;
 import android.util.DisplayMetrics;
 import android.view.Gravity;

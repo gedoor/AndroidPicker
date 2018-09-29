@@ -3,14 +3,15 @@ apply plugin: 'com.github.dcendents.android-maven'
 
 ext {
     isLibrary = true
-    pomArtifactId = "FilePicker"
-    pomDescription = "file picker for android"
+    pomArtifactId = "Common"
+    pomDescription = "Common of android picker"
 }
 
 dependencies {
-     implementation(":library:Common")
 }
 
 android {
     buildToolsVersion = '28.0.2'
 }
+
+

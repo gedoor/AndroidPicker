@@ -12,7 +12,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import cn.qqtheme.framework.picker.popup.ConfirmPopup;
+import cn.qqtheme.framework.popup.ConfirmPopup;
 
 /**
  * 多项选择器
