@@ -563,6 +563,8 @@ public class MainActivity extends BaseActivity {
 
     public void onDirPicker(View view) {
         FilePicker picker = new FilePicker(this, FilePicker.DIRECTORY);
+//        picker.setTopBackgroundColor(Color.BLACK);
+//        picker.setBackgroundColor(Color.BLACK);
         picker.setRootPath(StorageUtils.getExternalRootPath() + "Download/");
         picker.setItemHeight(30);
         picker.setOnFilePickListener(new FilePicker.OnFilePickListener() {
