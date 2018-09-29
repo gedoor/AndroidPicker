@@ -259,7 +259,6 @@ public class FileAdapter extends BaseAdapter {
         ViewHolder holder;
         if (convertView == null) {
             LinearLayout layout = new LinearLayout(context);
-            CompatUtils.setBackground(layout, new StateColorDrawable(Color.WHITE, Color.LTGRAY));
             layout.setOrientation(LinearLayout.HORIZONTAL);
             layout.setGravity(Gravity.CENTER_VERTICAL);
             int height = ConvertUtils.toPx(context, itemHeight);
