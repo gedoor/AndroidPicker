@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.os.Environment;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,9 +30,10 @@ import cn.qqtheme.framework.util.ConvertUtils;
  * @see cn.qqtheme.framework.picker.FilePicker
  */
 public class PathAdapter extends BaseAdapter {
-    private static final String ROOT_HINT = "ROOT";
+    private static final String ROOT_HINT = "SD";
     private LinkedList<String> paths = new LinkedList<>();
     private Drawable arrowIcon = null;
+    private String sdCardDirectory = Environment.getExternalStorageDirectory().getAbsolutePath();
 
     public PathAdapter() {
         super();
@@ -42,11 +44,12 @@ public class PathAdapter extends BaseAdapter {
     }
 
     public void updatePath(String path) {
+        path = path.replace(sdCardDirectory, "");
         if (arrowIcon == null) {
             arrowIcon = ConvertUtils.toDrawable(FilePickerIcon.getARROW());
         }
         paths.clear();
-        if (!path.equals("/")) {
+        if (!path.equals("/") && !path.equals("")) {
             String[] tmps = path.substring(path.indexOf("/") + 1).split("/");
             Collections.addAll(paths, tmps);
         }
@@ -61,7 +64,7 @@ public class PathAdapter extends BaseAdapter {
 
     @Override
     public String getItem(int position) {
-        String tmp = "/";
+        String tmp = sdCardDirectory + "/";
         //忽略根目录
         if (position == 0) {
             return tmp;
