@@ -8,7 +8,7 @@ ext {
 }
 
 dependencies {
-     implementation(":library:Common")
+    api project(":library:Common")
 }
 
 android {
