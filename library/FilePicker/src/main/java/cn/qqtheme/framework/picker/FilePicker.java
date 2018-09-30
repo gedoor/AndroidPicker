@@ -90,7 +90,6 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
         emptyView.setLayoutParams(txtParams);
         emptyView.setGravity(Gravity.CENTER);
         emptyView.setVisibility(View.GONE);
-        emptyView.setTextColor(Color.BLACK);
         rootLayout.addView(emptyView);
 
         return rootLayout;
