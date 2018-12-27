@@ -19,8 +19,6 @@ import android.os.Build;
 import android.os.Environment;
 import android.provider.DocumentsContract;
 import android.provider.MediaStore;
-import android.support.annotation.ColorInt;
-import android.support.annotation.FloatRange;
 import android.text.TextUtils;
 import android.view.View;
 import android.widget.ListView;
@@ -37,6 +35,9 @@ import java.text.DecimalFormat;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.FloatRange;
 
 /**
  * 数据类型转换、单位转换

@@ -1,6 +1,5 @@
 package cn.qqtheme.framework.util;
 
-import android.support.annotation.IntDef;
 import android.webkit.MimeTypeMap;
 
 import java.io.BufferedInputStream;
@@ -24,6 +23,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.regex.Pattern;
+
+import androidx.annotation.IntDef;
 
 /**
  * 文件处理

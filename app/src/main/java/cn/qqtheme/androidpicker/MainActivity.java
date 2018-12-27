@@ -3,8 +3,7 @@ package cn.qqtheme.androidpicker;
 import android.content.Intent;
 import android.graphics.Color;
 import android.net.Uri;
-import android.support.annotation.NonNull;
-import android.support.annotation.Nullable;
+
 import android.view.Gravity;
 import android.view.View;
 import android.widget.TextView;
@@ -17,6 +16,8 @@ import java.util.Calendar;
 import java.util.List;
 import java.util.Locale;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import cn.qqtheme.framework.entity.City;
 import cn.qqtheme.framework.entity.County;
 import cn.qqtheme.framework.entity.Province;
