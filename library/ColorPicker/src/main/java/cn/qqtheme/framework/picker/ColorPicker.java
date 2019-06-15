@@ -1,16 +1,17 @@
 package cn.qqtheme.framework.picker;
 
+import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.Drawable;
-
-import androidx.annotation.ColorInt;
-import androidx.annotation.IdRes;
-import androidx.annotation.NonNull;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+
+import androidx.annotation.ColorInt;
+import androidx.annotation.IdRes;
+import androidx.annotation.NonNull;
 
 import java.util.Locale;
 
@@ -26,6 +27,7 @@ import cn.qqtheme.framework.widget.StrokeTextView;
  * @author 李玉江[QQ:1032694760]
  * @since 2015/9/29
  */
+@SuppressLint("ResourceType")
 public class ColorPicker extends ConfirmPopup<LinearLayout> {
     @IdRes
     private static final int MULTI_ID = 0x1;
