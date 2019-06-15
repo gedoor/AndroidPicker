@@ -64,15 +64,15 @@ public class PathAdapter extends BaseAdapter {
 
     @Override
     public String getItem(int position) {
-        String tmp = sdCardDirectory + "/";
+        StringBuilder tmp = new StringBuilder(sdCardDirectory + "/");
         //忽略根目录
         if (position == 0) {
-            return tmp;
+            return tmp.toString();
         }
         for (int i = 1; i <= position; i++) {
-            tmp += paths.get(i) + "/";
+            tmp.append(paths.get(i)).append("/");
         }
-        return tmp;
+        return tmp.toString();
     }
 
     @Override

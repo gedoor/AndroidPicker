@@ -4,16 +4,16 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-
-import androidx.annotation.IntDef;
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import androidx.annotation.IntDef;
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -112,12 +112,7 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
         int height = ConvertUtils.toPx(activity, 30);
         pathView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, height));
         pathView.setAdapter(pathAdapter);
-        pathView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                refreshCurrentDirPath(pathAdapter.getItem(position));
-            }
-        });
+        pathView.setOnItemClickListener(this);
         rootLayout.addView(pathView);
 
         return rootLayout;
@@ -224,18 +219,22 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
      */
     @Override
     public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        FileItem fileItem = adapter.getItem(position);
-        if (fileItem.isDirectory()) {
-            refreshCurrentDirPath(fileItem.getPath());
+        if (adapterView.getAdapter() instanceof PathAdapter) {
+            refreshCurrentDirPath(pathAdapter.getItem(position));
         } else {
-            String clickPath = fileItem.getPath();
-            if (mode == DIRECTORY) {
-                LogUtils.warn("not directory: " + clickPath);
+            FileItem fileItem = adapter.getItem(position);
+            if (fileItem.isDirectory()) {
+                refreshCurrentDirPath(fileItem.getPath());
             } else {
-                dismiss();
-                LogUtils.debug("picked path: " + clickPath);
-                if (onFilePickListener != null) {
-                    onFilePickListener.onFilePicked(clickPath);
+                String clickPath = fileItem.getPath();
+                if (mode == DIRECTORY) {
+                    LogUtils.warn("not directory: " + clickPath);
+                } else {
+                    dismiss();
+                    LogUtils.debug("picked path: " + clickPath);
+                    if (onFilePickListener != null) {
+                        onFilePickListener.onFilePicked(clickPath);
+                    }
                 }
             }
         }
