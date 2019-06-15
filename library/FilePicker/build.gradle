@@ -9,4 +9,5 @@ ext {
 
 dependencies {
     api project(":library:Common")
+    compileOnly 'androidx.recyclerview:recyclerview:1.0.0'
 }

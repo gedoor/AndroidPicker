@@ -1,41 +1,31 @@
 package cn.qqtheme.framework.adapter;
 
 import android.content.Context;
-import android.graphics.Bitmap;
-import android.graphics.Color;
-import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
-import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
+import androidx.recyclerview.widget.RecyclerView;
+
 import java.io.File;
 import java.util.ArrayList;
 
-import cn.qqtheme.framework.drawable.StateColorDrawable;
 import cn.qqtheme.framework.entity.FileItem;
 import cn.qqtheme.framework.icons.FilePickerIcon;
-import cn.qqtheme.framework.util.CompatUtils;
 import cn.qqtheme.framework.util.ConvertUtils;
 import cn.qqtheme.framework.util.FileUtils;
 import cn.qqtheme.framework.util.LogUtils;
 
-/**
- * 文件目录数据适配
- *
- * @author 李玉江[QQ:1032694760]
- * @see cn.qqtheme.framework.picker.FilePicker
- * @since 2014-05-23 18:02
- */
-public class FileAdapter extends BaseAdapter {
+public class FileAdapter extends RecyclerView.Adapter<FileAdapter.MyViewHolder> {
     public static final String DIR_ROOT = ".";
     public static final String DIR_PARENT = "..";
-    private ArrayList<FileItem> data = new ArrayList<FileItem>();
+    private ArrayList<FileItem> data = new ArrayList<>();
     private String rootPath = null;
     private String currentPath = null;
     private String[] allowExtensions = null;//允许的扩展名
@@ -48,9 +38,14 @@ public class FileAdapter extends BaseAdapter {
     private Drawable upIcon = null;
     private Drawable folderIcon = null;
     private Drawable fileIcon = null;
+    private CallBack callBack;
 
-    public FileAdapter() {
-        super();
+    public void setCallBack(CallBack callBack) {
+        this.callBack = callBack;
+    }
+
+    public FileItem getItem(int pos) {
+        return data.get(pos);
     }
 
     public String getCurrentPath() {
@@ -210,99 +205,75 @@ public class FileAdapter extends BaseAdapter {
         notifyDataSetChanged();
     }
 
-    public void recycleData() {
-        data.clear();
-        if (homeIcon instanceof BitmapDrawable) {
-            Bitmap homeBitmap = ((BitmapDrawable) homeIcon).getBitmap();
-            if (null != homeBitmap && !homeBitmap.isRecycled()) {
-                homeBitmap.recycle();
-            }
+    @NonNull
+    @Override
+    public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        Context context = parent.getContext();
+        LinearLayout layout = new LinearLayout(context);
+        layout.setOrientation(LinearLayout.HORIZONTAL);
+        layout.setGravity(Gravity.CENTER_VERTICAL);
+        int height = ConvertUtils.toPx(context, itemHeight);
+        int matchParent = ViewGroup.LayoutParams.MATCH_PARENT;
+        // fixed: 17-1-8 #79 安卓4.x兼容问题，java.lang.ClassCastException……onMeasure……
+        if (parent instanceof AbsListView) {
+            layout.setLayoutParams(new AbsListView.LayoutParams(matchParent, height));
+        } else {
+            layout.setLayoutParams(new ViewGroup.LayoutParams(matchParent, height));
         }
-        if (upIcon instanceof BitmapDrawable) {
-            Bitmap upBitmap = ((BitmapDrawable) upIcon).getBitmap();
-            if (null != upBitmap && !upBitmap.isRecycled()) {
-                upBitmap.recycle();
-            }
-        }
-        if (folderIcon instanceof BitmapDrawable) {
-            Bitmap folderBitmap = ((BitmapDrawable) folderIcon).getBitmap();
-            if (null != folderBitmap && !folderBitmap.isRecycled()) {
-                folderBitmap.recycle();
-            }
-        }
-        if (fileIcon instanceof BitmapDrawable) {
-            Bitmap fileBitmap = ((BitmapDrawable) fileIcon).getBitmap();
-            if (null != fileBitmap && !fileBitmap.isRecycled()) {
-                fileBitmap.recycle();
-            }
-        }
+        int padding = ConvertUtils.toPx(context, 5);
+        layout.setPadding(padding, padding, padding, padding);
+
+        ImageView imageView = new ImageView(context);
+        int wh = ConvertUtils.toPx(context, 30);
+        imageView.setLayoutParams(new LinearLayout.LayoutParams(wh, wh));
+        imageView.setImageResource(android.R.drawable.ic_menu_report_image);
+        layout.addView(imageView);
+
+        TextView textView = new TextView(context);
+        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(matchParent, matchParent);
+        tvParams.leftMargin = ConvertUtils.toPx(context, 10);
+        textView.setLayoutParams(tvParams);
+        textView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
+        textView.setSingleLine();
+        layout.addView(textView);
+        MyViewHolder myViewHolder = new MyViewHolder(layout);
+        myViewHolder.imageView = imageView;
+        myViewHolder.textView = textView;
+        return myViewHolder;
     }
 
     @Override
-    public int getCount() {
+    public void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
+        FileItem fileItem = data.get(position);
+        holder.imageView.setImageDrawable(fileItem.getIcon());
+        holder.textView.setText(fileItem.getName());
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (callBack != null) {
+                    callBack.onFileClick(position);
+                }
+            }
+        });
+    }
+
+    @Override
+    public int getItemCount() {
         return data.size();
     }
 
-    @Override
-    public FileItem getItem(int position) {
-        return data.get(position);
-    }
-
-    @Override
-    public long getItemId(int position) {
-        return position;
-    }
-
-    @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        Context context = parent.getContext();
-        ViewHolder holder;
-        if (convertView == null) {
-            LinearLayout layout = new LinearLayout(context);
-            layout.setOrientation(LinearLayout.HORIZONTAL);
-            layout.setGravity(Gravity.CENTER_VERTICAL);
-            int height = ConvertUtils.toPx(context, itemHeight);
-            int matchParent = ViewGroup.LayoutParams.MATCH_PARENT;
-            // fixed: 17-1-8 #79 安卓4.x兼容问题，java.lang.ClassCastException……onMeasure……
-            if (parent instanceof AbsListView) {
-                layout.setLayoutParams(new AbsListView.LayoutParams(matchParent, height));
-            } else {
-                layout.setLayoutParams(new ViewGroup.LayoutParams(matchParent, height));
-            }
-            int padding = ConvertUtils.toPx(context, 5);
-            layout.setPadding(padding, padding, padding, padding);
-
-            ImageView imageView = new ImageView(context);
-            int wh = ConvertUtils.toPx(context, 30);
-            imageView.setLayoutParams(new LinearLayout.LayoutParams(wh, wh));
-            imageView.setImageResource(android.R.drawable.ic_menu_report_image);
-            layout.addView(imageView);
-
-            TextView textView = new TextView(context);
-            LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(matchParent, matchParent);
-            tvParams.leftMargin = ConvertUtils.toPx(context, 10);
-            textView.setLayoutParams(tvParams);
-            textView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
-            textView.setSingleLine();
-            layout.addView(textView);
-
-            convertView = layout;
-            holder = new ViewHolder();
-            holder.imageView = imageView;
-            holder.textView = textView;
-            convertView.setTag(holder);
-        } else {
-            holder = (ViewHolder) convertView.getTag();
-        }
-        FileItem item = data.get(position);
-        holder.imageView.setImageDrawable(item.getIcon());
-        holder.textView.setText(item.getName());
-        return convertView;
-    }
-
-    private static class ViewHolder {
+    class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView imageView;
         TextView textView;
+
+        MyViewHolder(@NonNull View itemView) {
+            super(itemView);
+        }
+    }
+
+    public interface CallBack {
+        void onFileClick(int position);
     }
 
 }
+

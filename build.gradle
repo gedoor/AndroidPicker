@@ -97,8 +97,8 @@ subprojects {
             }
 
             dependencies {
-                compileOnly 'androidx.core:core:1.1.0-alpha03'
-                compileOnly 'androidx.appcompat:appcompat:1.1.0-alpha01'
+                compileOnly 'androidx.core:core:1.2.0-alpha01'
+                compileOnly 'androidx.appcompat:appcompat:1.1.0-beta01'
             }
         }
 

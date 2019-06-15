@@ -1,19 +1,18 @@
 package cn.qqtheme.framework.picker;
 
 import android.app.Activity;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TextView;
 
 import androidx.annotation.IntDef;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.recyclerview.widget.DividerItemDecoration;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
@@ -25,7 +24,6 @@ import cn.qqtheme.framework.popup.ConfirmPopup;
 import cn.qqtheme.framework.util.ConvertUtils;
 import cn.qqtheme.framework.util.LogUtils;
 import cn.qqtheme.framework.util.StorageUtils;
-import cn.qqtheme.framework.widget.HorizontalListView;
 
 /**
  * 文件目录选择器
@@ -33,7 +31,7 @@ import cn.qqtheme.framework.widget.HorizontalListView;
  * @author 李玉江[QQ:1032694760]
  * @since 2015/9/29, 2017/01/01, 2017/01/08
  */
-public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterView.OnItemClickListener {
+public class FilePicker extends ConfirmPopup<LinearLayout> implements FileAdapter.CallBack, PathAdapter.CallBack {
     public static final int DIRECTORY = 0;
     public static final int FILE = 1;
 
@@ -67,6 +65,8 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
         adapter.setShowHideDir(false);
         adapter.setShowHomeDir(false);
         adapter.setShowUpDir(false);
+        adapter.setCallBack(this);
+        pathAdapter.setCallBack(this);
     }
 
     @Override
@@ -76,14 +76,12 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
         rootLayout.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT));
         rootLayout.setOrientation(LinearLayout.VERTICAL);
 
-        ListView listView = new ListView(activity);
-        listView.setDivider(new ColorDrawable(0xFFDDDDDD));
-        listView.setDividerHeight(1);
-        listView.setCacheColorHint(Color.TRANSPARENT);
-        listView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        listView.setAdapter(adapter);
-        listView.setOnItemClickListener(this);
-        rootLayout.addView(listView);
+        RecyclerView recyclerView = new RecyclerView(activity);
+        recyclerView.addItemDecoration(new DividerItemDecoration(activity, LinearLayout.VERTICAL));
+        recyclerView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
+        recyclerView.setLayoutManager(new LinearLayoutManager(activity));
+        recyclerView.setAdapter(adapter);
+        rootLayout.addView(recyclerView);
 
         emptyView = new TextView(activity);
         LinearLayout.LayoutParams txtParams = new LinearLayout.LayoutParams(MATCH_PARENT, MATCH_PARENT);
@@ -108,11 +106,11 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
         lineView.setBackgroundColor(0xFFDDDDDD);
         rootLayout.addView(lineView);
 
-        HorizontalListView pathView = new HorizontalListView(activity);
+        RecyclerView pathView = new RecyclerView(activity);
         int height = ConvertUtils.toPx(activity, 30);
         pathView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, height));
+        pathView.setLayoutManager(new LinearLayoutManager(activity, LinearLayout.HORIZONTAL, false));
         pathView.setAdapter(pathAdapter);
-        pathView.setOnItemClickListener(this);
         rootLayout.addView(pathView);
 
         return rootLayout;
@@ -198,8 +196,6 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
     @Override
     public void dismiss() {
         super.dismiss();
-        //adapter.recycleData();
-        //pathAdapter.recycleData();
     }
 
     public FileAdapter getAdapter() {
@@ -218,26 +214,27 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
      * 响应选择器的列表项点击事件
      */
     @Override
-    public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
-        if (adapterView.getAdapter() instanceof PathAdapter) {
-            refreshCurrentDirPath(pathAdapter.getItem(position));
+    public void onFileClick(int position) {
+        FileItem fileItem = adapter.getItem(position);
+        if (fileItem.isDirectory()) {
+            refreshCurrentDirPath(fileItem.getPath());
         } else {
-            FileItem fileItem = adapter.getItem(position);
-            if (fileItem.isDirectory()) {
-                refreshCurrentDirPath(fileItem.getPath());
+            String clickPath = fileItem.getPath();
+            if (mode == DIRECTORY) {
+                LogUtils.warn("not directory: " + clickPath);
             } else {
-                String clickPath = fileItem.getPath();
-                if (mode == DIRECTORY) {
-                    LogUtils.warn("not directory: " + clickPath);
-                } else {
-                    dismiss();
-                    LogUtils.debug("picked path: " + clickPath);
-                    if (onFilePickListener != null) {
-                        onFilePickListener.onFilePicked(clickPath);
-                    }
+                dismiss();
+                LogUtils.debug("picked path: " + clickPath);
+                if (onFilePickListener != null) {
+                    onFilePickListener.onFilePicked(clickPath);
                 }
             }
         }
+    }
+
+    @Override
+    public void onPathClick(int position) {
+        refreshCurrentDirPath(pathAdapter.getItem(position));
     }
 
     private void refreshCurrentDirPath(String currentPath) {
@@ -247,7 +244,7 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements AdapterVie
             pathAdapter.updatePath(currentPath);
         }
         adapter.loadData(currentPath);
-        int adapterCount = adapter.getCount();
+        int adapterCount = adapter.getItemCount();
         if (adapter.isShowHomeDir()) {
             adapterCount--;
         }
