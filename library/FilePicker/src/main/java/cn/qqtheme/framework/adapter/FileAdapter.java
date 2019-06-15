@@ -1,13 +1,10 @@
 package cn.qqtheme.framework.adapter;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +14,7 @@ import java.io.File;
 import java.util.ArrayList;
 
 import cn.qqtheme.framework.entity.FileItem;
+import cn.qqtheme.framework.filepicker.R;
 import cn.qqtheme.framework.icons.FilePickerIcon;
 import cn.qqtheme.framework.util.ConvertUtils;
 import cn.qqtheme.framework.util.FileUtils;
@@ -208,38 +206,7 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.MyViewHolder> 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setGravity(Gravity.CENTER_VERTICAL);
-        int height = ConvertUtils.toPx(context, itemHeight);
-        int matchParent = ViewGroup.LayoutParams.MATCH_PARENT;
-        // fixed: 17-1-8 #79 安卓4.x兼容问题，java.lang.ClassCastException……onMeasure……
-        if (parent instanceof AbsListView) {
-            layout.setLayoutParams(new AbsListView.LayoutParams(matchParent, height));
-        } else {
-            layout.setLayoutParams(new ViewGroup.LayoutParams(matchParent, height));
-        }
-        int padding = ConvertUtils.toPx(context, 5);
-        layout.setPadding(padding, padding, padding, padding);
-
-        ImageView imageView = new ImageView(context);
-        int wh = ConvertUtils.toPx(context, 30);
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(wh, wh));
-        imageView.setImageResource(android.R.drawable.ic_menu_report_image);
-        layout.addView(imageView);
-
-        TextView textView = new TextView(context);
-        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(matchParent, matchParent);
-        tvParams.leftMargin = ConvertUtils.toPx(context, 10);
-        textView.setLayoutParams(tvParams);
-        textView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
-        textView.setSingleLine();
-        layout.addView(textView);
-        MyViewHolder myViewHolder = new MyViewHolder(layout);
-        myViewHolder.imageView = imageView;
-        myViewHolder.textView = textView;
-        return myViewHolder;
+        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_file, parent, false));
     }
 
     @Override
@@ -268,6 +235,8 @@ public class FileAdapter extends RecyclerView.Adapter<FileAdapter.MyViewHolder> 
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            imageView = itemView.findViewById(R.id.image_view);
+            textView = itemView.findViewById(R.id.text_view);
         }
     }
 

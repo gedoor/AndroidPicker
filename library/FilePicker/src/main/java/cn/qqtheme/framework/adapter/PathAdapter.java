@@ -1,14 +1,11 @@
 package cn.qqtheme.framework.adapter;
 
-import android.content.Context;
 import android.graphics.drawable.Drawable;
 import android.os.Environment;
-import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.ImageView;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -17,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.Collections;
 import java.util.LinkedList;
 
+import cn.qqtheme.framework.filepicker.R;
 import cn.qqtheme.framework.icons.FilePickerIcon;
 import cn.qqtheme.framework.util.ConvertUtils;
 
@@ -64,35 +62,7 @@ public class PathAdapter extends RecyclerView.Adapter<PathAdapter.MyViewHolder> 
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Context context = parent.getContext();
-        int matchParent = ViewGroup.LayoutParams.MATCH_PARENT;
-        int wrapContent = ViewGroup.LayoutParams.WRAP_CONTENT;
-        LinearLayout layout = new LinearLayout(context);
-        layout.setOrientation(LinearLayout.HORIZONTAL);
-        layout.setGravity(Gravity.CENTER_VERTICAL);
-        // fixed: 17-1-8 #79 安卓4.x兼容问题，java.lang.ClassCastException……onMeasure……
-        if (parent instanceof AbsListView) {
-            layout.setLayoutParams(new AbsListView.LayoutParams(wrapContent, matchParent));
-        } else {
-            layout.setLayoutParams(new ViewGroup.LayoutParams(wrapContent, matchParent));
-        }
-
-        TextView textView = new TextView(context);
-        LinearLayout.LayoutParams tvParams = new LinearLayout.LayoutParams(wrapContent, matchParent);
-        textView.setLayoutParams(tvParams);
-        textView.setGravity(Gravity.START | Gravity.CENTER_VERTICAL);
-        int padding = ConvertUtils.toPx(context, 5);
-        textView.setPadding(padding, 0, padding, 0);
-        layout.addView(textView);
-
-        ImageView imageView = new ImageView(context);
-        int width = ConvertUtils.toPx(context, 20);
-        imageView.setLayoutParams(new LinearLayout.LayoutParams(width, matchParent));
-        layout.addView(imageView);
-        MyViewHolder myViewHolder = new MyViewHolder(layout);
-        myViewHolder.imageView = imageView;
-        myViewHolder.textView = textView;
-        return myViewHolder;
+        return new MyViewHolder(LayoutInflater.from(parent.getContext()).inflate(R.layout.item_path, parent, false));
     }
 
     @Override
@@ -120,6 +90,8 @@ public class PathAdapter extends RecyclerView.Adapter<PathAdapter.MyViewHolder> 
 
         MyViewHolder(@NonNull View itemView) {
             super(itemView);
+            imageView = itemView.findViewById(R.id.image_view);
+            textView = itemView.findViewById(R.id.text_view);
         }
     }
 
