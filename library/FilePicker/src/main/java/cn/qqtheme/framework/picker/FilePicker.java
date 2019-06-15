@@ -3,6 +3,7 @@ package cn.qqtheme.framework.picker;
 import android.app.Activity;
 import android.graphics.drawable.Drawable;
 import android.view.Gravity;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -20,8 +21,8 @@ import java.lang.annotation.RetentionPolicy;
 import cn.qqtheme.framework.adapter.FileAdapter;
 import cn.qqtheme.framework.adapter.PathAdapter;
 import cn.qqtheme.framework.entity.FileItem;
+import cn.qqtheme.framework.filepicker.R;
 import cn.qqtheme.framework.popup.ConfirmPopup;
-import cn.qqtheme.framework.util.ConvertUtils;
 import cn.qqtheme.framework.util.LogUtils;
 import cn.qqtheme.framework.util.StorageUtils;
 
@@ -97,21 +98,11 @@ public class FilePicker extends ConfirmPopup<LinearLayout> implements FileAdapte
     @Nullable
     @Override
     protected View makeFooterView() {
-        LinearLayout rootLayout = new LinearLayout(activity);
-        rootLayout.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, WRAP_CONTENT));
-        rootLayout.setOrientation(LinearLayout.VERTICAL);
+        View rootLayout = LayoutInflater.from(activity).inflate(R.layout.path_view, null);
 
-        View lineView = new View(activity);
-        lineView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, 1));
-        lineView.setBackgroundColor(0xFFDDDDDD);
-        rootLayout.addView(lineView);
-
-        RecyclerView pathView = new RecyclerView(activity);
-        int height = ConvertUtils.toPx(activity, 30);
-        pathView.setLayoutParams(new LinearLayout.LayoutParams(MATCH_PARENT, height));
+        RecyclerView pathView = rootLayout.findViewById(R.id.rv_path);
         pathView.setLayoutManager(new LinearLayoutManager(activity, LinearLayout.HORIZONTAL, false));
         pathView.setAdapter(pathAdapter);
-        rootLayout.addView(pathView);
 
         return rootLayout;
     }
